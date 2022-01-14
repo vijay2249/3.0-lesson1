@@ -5,7 +5,9 @@ import {TransactionContext} from '../context/TransactionContext'
 import dummyData from '../utils/dummyData'
 import { shorternAddress } from '../utils/shorternAddress'
 
-const TransactionCard = ({addressTo, addressFrom, timestamp, message, keyword, amount, url}) =>{
+const TransactionCard = (props) => {
+  const {addressTo, addressFrom, timestamp, message, keyword, amount, url} = props;
+  console.log('===> ', props );
   return (
     <div className='bg-[#181918] m-4 flex flex-1
       2xl:min-w-[450px]
@@ -36,10 +38,11 @@ const Transactions = () =>{
         }
 
         <div className='flex flex-wrap justify-center items-center mt-10'>
-          {dummyData.reverse().map((transaction, i) =>{
+          {dummyData.reverse().map((transaction, i) => (
             <TransactionCard key={i} {...transaction} />
-          })}
+          ))}
         </div>
+        {/* <Transactio/nCard /> */}
       </div>
     </div>
   );
