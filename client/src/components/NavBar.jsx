@@ -4,11 +4,7 @@ import { useState } from 'react';
 
 import logo from '../../images/logo.png';
 
-const NavBarItem = ({title, classProp}) =>{
-  return (
-    <li className={`mx-4 cursor-pointer ${classProp}`}> {title} </li>
-  );
-}
+const NavBarItem = ({title, classProp}) =>(<li className={`mx-4 cursor-pointer ${classProp}`}>{title}</li>)
 
 const NavBar = () =>{
   const [toggleMenu, setToggleMenu] = useState(false);
@@ -22,9 +18,7 @@ const NavBar = () =>{
         {["Market", "Exchange", "Tutorials", "Wallets"].map((item, index) =>(
           <NavBarItem key={item+index} title={item} />
         ))}
-        <li className='bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]'>
-          Login
-        </li>
+        <li className='bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]'>Login</li>
       </ul>
       <div className='flex relative'>
         {

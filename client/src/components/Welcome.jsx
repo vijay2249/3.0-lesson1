@@ -1,5 +1,4 @@
 import React, {useContext} from 'react'
-import {AiFillPlayCircle} from 'react-icons/ai'
 import {SiEthereum} from 'react-icons/si'
 import {BsInfoCircle} from 'react-icons/bs'
 
@@ -22,8 +21,7 @@ const Input = ({placeholder, name, handleChange, type, value}) =>(
 );
 
 const Welcome = () =>{
-
-  const {connectWallet, currentAccount, formData, setFormData, handleChange, sendTransaction} = useContext(TransactionContext);
+  const {connectWallet, currentAccount, formData, handleChange, sendTransaction, isLoading} = useContext(TransactionContext);
 
   const handleSubmit = (e) =>{
     const {addressTo, amount, keyword, message} = formData
@@ -41,7 +39,7 @@ const Welcome = () =>{
             Around the WORLD
           </h1>
           <p className='text-left mt-5 text-white font-light md:w-9/12 w-11/12 text-base'>
-            Explore The Crypto WORLD. Buy and Sell Crypto with KRYPTO
+            Explore The Learning WORLD. Buy and Sell Laughs with People
           </p>
           {!currentAccount && (
             <button
@@ -85,7 +83,7 @@ const Welcome = () =>{
             <Input placeholder="Enter message" name="message" type='text' handleChange={handleChange} />
             <div className='h-[1px] w-full bg-gray-400 m-2'/>
             {
-              false
+              isLoading
               ? <Loader />
               : (
                   <button 
@@ -103,6 +101,5 @@ const Welcome = () =>{
     </div>
   );
 }
-  
+
 export default Welcome;
-  

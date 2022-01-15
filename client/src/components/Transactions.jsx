@@ -2,13 +2,12 @@ import React, {useContext} from 'react'
 
 import {TransactionContext} from '../context/TransactionContext'
 
-import dummyData from '../utils/dummyData'
 import { shorternAddress } from '../utils/shorternAddress'
 import useFetch from '../hooks/useFetch'
 
 const TransactionCard = (props) => {
   const {addressTo, addressFrom, timestamp, message, keyword, amount, url} = props;
-  const gifURL = useFetch(keyword || "")
+  const gifURL = useFetch({keyword})
   return (
     <div className='bg-[#181918] m-4 flex flex-1
       2xl:min-w-[450px]
@@ -32,22 +31,22 @@ const TransactionCard = (props) => {
               <p className='text-white text-base'>Message: {message}</p>
             </>
           )}
+        </div>
           <img 
             src={gifURL || url}
             alt='gif'
-            className='w-full h-64 2x:h-96 rounded-md shadow-lg object-cover'
+            className='w-full h-64 2xl:h-96 rounded-md shadow-lg object-cover'
           />
           <div className='bg-black p-2 px-5 w-max rounded-3xl -mt-5 shadow-2xl'>
             <p className='text-[#37c7da] font-bold'>{timestamp}</p>
           </div>
-        </div>
       </div>
     </div>
   )
 }
 
 const Transactions = () =>{
-  const {currentAccount} = useContext(TransactionContext)
+  const {currentAccount, transactions} = useContext(TransactionContext)
   return (
     <div className='flex w-full justify-center items-center 2xl:px-20 gradient-bg-transactions'>
       <div className='flex flex-col md:p-12 py-12 px-4'>
@@ -55,9 +54,8 @@ const Transactions = () =>{
           ?(<h3 className='text-white text-3xl text-center my-2'>Latest Articles</h3>)
           :(<h3 className='text-white text-3xl text-center my-2'>Connect account to see latest articles</h3>)
         }
-
         <div className='flex flex-wrap justify-center items-center mt-10'>
-          {dummyData.reverse().map((transaction, i) => (
+          {transactions.map((transaction, i) => (
             <TransactionCard key={i} {...transaction} />
           ))}
         </div>
@@ -65,6 +63,5 @@ const Transactions = () =>{
     </div>
   );
 }
- 
+
 export default Transactions;
-  

@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
-
 // import api key
-// const API_KEY = import.meta.env.API
+const API_KEY = import.meta.env.API
 
 const useFetch = ({keyword}) =>{
   const [url, setURL] = useState('')
 
   const fetchGIF = async () =>{
     try{
-      const response = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${api_key}&q=${keyword.split(" ").join("")}&limit=1`)
-      const {data} = response.json()
+      const response = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${API_KEY}&q=${keyword.split(" ").join("")}&limit=1`)
+      const {data} = await response.json()
       setURL(data[0]?.images?.downsized_medium?.url)
     }catch(err){
-      setGIF("https://metro.co.uk/wp-content/uploads/2015/05/pokemon_crying.gif?quality=90&strip=all&zoom=1&resize=500%2C284")
+      setURL("https://i.pinimg.com/originals/73/d3/a1/73d3a14d212314ab1f7268b71d639c15.gif")
     }
   }
   useEffect(() => {

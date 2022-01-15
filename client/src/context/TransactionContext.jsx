@@ -22,11 +22,37 @@ export const TransactionProvider = ({children}) =>{
     keyword: '',
     message: ''
   })
-  const [isLoading, setisLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [transactionCount, setTransactionCount] = useState(localStorage.getItem('transactionCount'))
+  const [transactions, setTransactions] = useState([])
 
   const handleChange = (e, name) =>{
     setFormData((prevState)=>({...prevState, [name]:e.target.value}))
+  }
+
+  const ErrorMsg = (err, fromFunction='') =>{
+    console.log(err);
+    console.log(fromFunction);
+    throw new Error("No ETH object found")
+  }
+
+  const getAllTransactions = async () =>{
+    try{
+      if(!ethereum) return alert("Install metamask or brave wallet")
+      const transactionContract = getEthereumContract();
+      const availableTransactions =  await transactionContract.getAllTransactions();
+      const readableTransactions = availableTransactions.map(transaction =>({
+        addressTo: transaction.receiver,
+        addressFrom: transaction.sender,
+        timestamp: new Date(transaction.timestamp.toNumber()*1000).toLocaleString(),
+        message: transaction.message,
+        keyword: transaction.keyword,
+        amount: parseInt(transaction.amount._hex)/(10**18)
+      }))
+      setTransactions(readableTransactions)
+    }catch(err){
+      ErrorMsg(err, 'getAllTransactions')
+    }
   }
 
   const checkWalletConnection = async () =>{
@@ -35,13 +61,22 @@ export const TransactionProvider = ({children}) =>{
       const accounts = await ethereum.request({method: 'eth_accounts'})
       if(accounts.length){
         setCurrentAccount(accounts[0])
-        // getAllTransactions();
+        getAllTransactions();
       }else{
         console.log("No Accounts Found");
       }
     }catch(err){
-      console.log(err);
-      throw new Error("No ETH object")
+      ErrorMsg(err, 'checkWalletConnection');
+    }
+  }
+
+  const checkTransactions = async () =>{
+    try{
+      const transactionContract = getEthereumContract();
+      const transactionCount = await transactionContract.getTransactionCount()
+      window.localStorage.setItem('transactionCount', transactionCount)
+    }catch(err){
+      ErrorMsg(err, 'checkTransactions')
     }
   }
 
@@ -51,8 +86,7 @@ export const TransactionProvider = ({children}) =>{
       const accounts = await ethereum.request({method: 'eth_requestAccounts'})
       setCurrentAccount(accounts[0])
     }catch(error){
-      console.log(error);
-      throw new Error("No ETH object")
+      ErrorMsg(error, 'connectWallet')
     }
   }
 
@@ -74,27 +108,26 @@ export const TransactionProvider = ({children}) =>{
       })
 
       const transactionHash = await transactionContract.addToBlockChain(addressTo, parsedAmount, message, keyword)
-      setisLoading(true);
-      console.log(`Loading - ${transactionHash.hash}`);
+      setIsLoading(true);
       await transactionHash.wait()
-      setisLoading(false);
-      console.log(`Success - ${transactionHash.hash}`);
+      setIsLoading(false);
       const transactionCount = await transactionContract.getTransactionCount()
       setTransactionCount(transactionCount.toNumber())
-
+      // setFormData({addressTo:'', amount:'', keyword: '', message: '' })
+      window.reload();
     }catch(err){
-      console.log(err);
-      throw new Error("No ETH object");
+      ErrorMsg(err, 'sendTransaction')
     }
   }
 
   useEffect(() => {
     checkWalletConnection();
+    checkTransactions();
   }, []);
 
   return (
     <TransactionContext.Provider 
-      value={{connectWallet, currentAccount, formData, setFormData, handleChange, sendTransaction}}>
+      value={{connectWallet, currentAccount, formData, handleChange, sendTransaction, transactions, isLoading}}>
       {children}
     </TransactionContext.Provider>
   )
