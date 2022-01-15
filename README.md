@@ -4,7 +4,7 @@
 1. Clone this repo
 2. cd client
 3. npm i
-4. cd ../smaer_contract
+4. cd ../smart_contract
 5. npm i
 
 6. Install metamask extension
